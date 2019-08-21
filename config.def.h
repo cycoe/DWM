@@ -8,16 +8,16 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=12" };
 static const char dmenufont[]       = "monospace:size=12";
-static const char col_act_text[]    = "#eeeeee";
-static const char col_act_back[]    = "#339933";
-static const char col_act_bord[]    = "#4e3265";
-static const char col_ina_text[]    = "#bbbbbb";
-static const char col_ina_back[]    = "#4e3265";
-static const char col_ina_bord[]    = "#4e3265";
+static const char col_sel_text[]    = "#eeeeee";
+static const char col_sel_back[]    = "#339933";
+static const char col_sel_bord[]    = "#4e3265";
+static const char col_nor_text[]    = "#bbbbbb";
+static const char col_nor_back[]    = "#4e3265";
+static const char col_nor_bord[]    = "#4e3265";
 static const char *colors[][3]      = {
 	/*               fg            bg            border   */
-	[SchemeNorm] = { col_act_text, col_act_back, col_act_bord },
-	[SchemeSel]  = { col_ina_text, col_ina_back, col_ina_bord },
+	[SchemeNorm] = { col_nor_text, col_nor_back, col_nor_bord },
+	[SchemeSel]  = { col_sel_text, col_sel_back, col_sel_bord },
 };
 
 /* tagging */
@@ -59,7 +59,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_ina_back, "-nf", col_ina_text, "-sb", col_act_back, "-sf", col_act_text, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_nor_back, "-nf", col_nor_text, "-sb", col_sel_back, "-sf", col_sel_text, NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
 static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
