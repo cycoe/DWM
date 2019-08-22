@@ -61,8 +61,8 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2]        = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[]  = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_nor_back, "-nf", col_nor_text, "-sb", col_sel_back, "-sf", col_sel_text, NULL };
-static const char *rofimenu[]  = { "rofi", "-show", "drun", "-show-icons", "-config", "~/.config/rofi/rofi.config" };
-static const char *exitmenu[]  = { "bash", "~/.config/dwm/exit.sh" };
+static const char *rofimenu[]  = { "rofi", "-show", "drun", "-show-icons", "-config", "~/.config/rofi/rofi.config", NULL };
+static const char *exitmenu[]  = { "/bin/sh", "-c", "~/.config/dwm/exit.sh", NULL };
 static const char *termcmd[]   = { "alacritty", NULL };
 static const char *ranger[]    = { "alacritty", "-e", "ranger", NULL };
 static const char *ncmpcpp[]   = { "alacritty", "-e", "ncmpcpp", NULL };
