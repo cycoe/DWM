@@ -60,7 +60,9 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2]        = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[]  = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_nor_back, "-nf", col_nor_text, "-sb", col_sel_back, "-sf", col_sel_text, NULL };
+/* static const char *dmenucmd[]  = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_nor_back, "-nf", col_nor_text, "-sb", col_sel_back, "-sf", col_sel_text, NULL }; */
+static const char *rofimenu[]  = { "rofi", "-show", "drun", "-show-icons", "-config", "$HOME/.config/rofi/rofi.config" };
+static const char *exitmenu[]  = { "$HOME/.config/dwm/exit.sh" };
 static const char *termcmd[]   = { "alacritty", NULL };
 static const char *ranger[]    = { "alacritty", "-e", "ranger", NULL };
 static const char *ncmpcpp[]   = { "alacritty", "-e", "ncmpcpp", NULL };
@@ -72,7 +74,7 @@ static const char *mutevol[]   = { "/usr/bin/pactl", "set-sink-mute",   "0", "to
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_d,      spawn,          {.v = rofimenu } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = ranger } },
 	{ MODKEY,                       XK_n,      spawn,          {.v = ncmpcpp } },
@@ -99,7 +101,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ShiftMask,             XK_q,      spawn,          {.v = exitmenu} },
 	{ 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
 	{ 0,                       XF86XK_AudioMute, spawn, {.v = mutevol } },
 	{ 0,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
