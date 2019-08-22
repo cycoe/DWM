@@ -10,7 +10,7 @@ static const char *fonts[]          = { "monospace:size=12" };
 static const char dmenufont[]       = "monospace:size=12";
 static const char col_sel_text[]    = "#4e3265";
 static const char col_sel_back[]    = "#339933";
-static const char col_sel_bord[]    = "#4e3265";
+static const char col_sel_bord[]    = "#339933";
 static const char col_nor_text[]    = "#eeeeee";
 static const char col_nor_back[]    = "#4e3265";
 static const char col_nor_bord[]    = "#4e3265";
