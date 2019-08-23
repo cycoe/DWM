@@ -68,9 +68,11 @@ static const char *ranger[]    = { "alacritty", "-e", "ranger", NULL };
 static const char *ncmpcpp[]   = { "alacritty", "-e", "ncmpcpp", NULL };
 static const char *flameshot[] = { "flameshot", "gui", NULL };
 static const char *variety[]   = { "variety", "--selector", NULL };
-static const char *upvol[]     = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
-static const char *downvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
-static const char *mutevol[]   = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
+static const char *upvol[]     = { "/bin/sh", "-c", "/usr/bin/pactl set-sink-volume 0 +5% && ~/.config/dwm/refbar.sh",  NULL };
+static const char *downvol[]   = { "/bin/sh", "-c", "/usr/bin/pactl set-sink-volume 0 -5% && ~/.config/dwm/refbar.sh",  NULL };
+static const char *mutevol[]   = { "/bin/sh", "-c", "/usr/bin/pactl set-sink-mute 0 toggle && ~/.config/dwm/refbar.sh", NULL };
+static const char *uplight[] = { "/bin/sh", "-c", "xbacklight -inc 10 && ~/.config/dwm/refbar.sh", NULL };
+static const char *downlight[] = { "/bin/sh", "-c", "xbacklight -dec 10 && ~/.config/dwm/refbar.sh", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -102,9 +104,13 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_q,      spawn,          {.v = exitmenu} },
-	{ 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
-	{ 0,                       XF86XK_AudioMute, spawn, {.v = mutevol } },
-	{ 0,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
+	{ MODKEY,                       XK_semicolon, spawn, {.v = uplight } },
+	{ MODKEY,                       XK_apostrophe, spawn, {.v = downlight } },
+	{ MODKEY,                       XK_bracketright, spawn, {.v = upvol } },
+	{ MODKEY,                       XK_bracketleft, spawn, {.v = downvol } },
+	{ 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
+	{ 0,                            XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
+	{ 0,                            XF86XK_AudioMute, spawn, {.v = mutevol } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
