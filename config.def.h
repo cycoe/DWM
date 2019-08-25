@@ -29,16 +29,17 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance      title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,         NULL,       0,            1,           -1 },
-	{ "mpv",      NULL,         NULL,       0,            1,           -1 },
-	{ "Variety",  "variety",    NULL,       0,            1,           -1 },
-	{ "Wine",     "wechat.exe", NULL,       0,            1,           -1 },
+	{ "Gimp",        NULL,          NULL,       0,            1,           -1 },
+	{ "mpv",         NULL,          NULL,       0,            1,           -1 },
+	{ "Variety",     "variety",     NULL,       0,            1,           -1 },
+	{ "Wine",        "wechat.exe",  NULL,       0,            1,           -1 },
+	{ "Youdao Dict", "youdao-dict", NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -63,9 +64,9 @@ static char dmenumon[2]        = "0"; /* component of dmenucmd, manipulated in s
 static const char *dmenucmd[]  = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_nor_back, "-nf", col_nor_text, "-sb", col_sel_back, "-sf", col_sel_text, NULL };
 static const char *rofimenu[]  = { "rofi", "-show", "drun", "-m", dmenumon, "-show-icons", "-config", "~/.config/rofi/rofi.config", NULL };
 static const char *exitmenu[]  = { "/bin/sh", "-c", "~/.config/dwm/exit.sh", NULL };
-static const char *termcmd[]   = { "alacritty", NULL };
-static const char *ranger[]    = { "alacritty", "-e", "ranger", NULL };
-static const char *ncmpcpp[]   = { "alacritty", "-e", "ncmpcpp", NULL };
+static const char *termcmd[]   = { "st", NULL };
+static const char *ranger[]    = { "st", "-e", "ranger", NULL };
+static const char *ncmpcpp[]   = { "st", "-e", "ncmpcpp", NULL };
 static const char *flameshot[] = { "flameshot", "gui", NULL };
 static const char *variety[]   = { "variety", "--selector", NULL };
 static const char *upvol[]     = { "/bin/sh", "-c", "/usr/bin/pactl set-sink-volume 0 +5% && ~/.config/dwm/refbar.sh",  NULL };
@@ -93,9 +94,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Escape,    view,           {0} },
 	{ MODKEY,                       XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_s,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
+	{ MODKEY,                       XK_f,      togglefullscreen, {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
@@ -104,13 +106,13 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_q,      spawn,          {.v = exitmenu} },
-	{ MODKEY,                       XK_semicolon, spawn, {.v = uplight } },
-	{ MODKEY,                       XK_apostrophe, spawn, {.v = downlight } },
-	{ MODKEY,                       XK_bracketright, spawn, {.v = upvol } },
-	{ MODKEY,                       XK_bracketleft, spawn, {.v = downvol } },
+	{ MODKEY,                       XK_apostrophe, spawn,      {.v = uplight } },
+	{ MODKEY,                       XK_semicolon, spawn,       {.v = downlight } },
+	{ MODKEY,                       XK_bracketright, spawn,    {.v = upvol } },
+	{ MODKEY,                       XK_bracketleft, spawn,     {.v = downvol } },
 	{ 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
 	{ 0,                            XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
-	{ 0,                            XF86XK_AudioMute, spawn, {.v = mutevol } },
+	{ 0,                            XF86XK_AudioMute, spawn,   {.v = mutevol } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
