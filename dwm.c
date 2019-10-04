@@ -1362,23 +1362,26 @@ pop(Client *c)
 void
 upswap(Client *c)
 {
-    Client **tc;
+    Client **tc, **pt;
 
-    for (tc = &c->mon->clients; *tc && (*tc)->next != c; tc = &(*tc)->next);
-    (*tc)->next = c->next;
-    c->next = *tc;
-    *tc = c;
+    for (tc = &c->mon->clients; *tc && *tc != c; tc = &(*tc)->next)
+        if (!(*tc)->isfloating && ISVISIBLE(*tc))
+            pt = tc;
+    *tc = c->next;
+    c->next = *pt;
+    *pt = c;
 }
 
 void
 downswap(Client *c)
 {
-    Client **tc;
+    Client **tc, **nt;
 
     for (tc = &c->mon->clients; *tc && *tc != c; tc = &(*tc)->next);
+    for (nt = &c->next; *nt && ((*nt)->isfloating || !ISVISIBLE(*nt)); nt = &(*nt)->next);
     *tc = c->next;
-    c->next = (*tc)->next;
-    (*tc)->next = c;
+    c->next = (*nt)->next;
+    (*nt)->next = c;
 }
 
 void
