@@ -34,6 +34,7 @@ static const Rule rules[] = {
 	{ "Variety",     "variety",     NULL,       0,            1,           -1 },
 	{ "Wine",        "wechat.exe",  NULL,       0,            1,           -1 },
 	{ "Youdao Dict", "youdao-dict", NULL,       0,            1,           -1 },
+	{ "flameshot",   "flameshot",   NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
