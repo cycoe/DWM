@@ -185,6 +185,11 @@ static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
 static Client *nexttiled(Client *c);
 static void pop(Client *);
+static void up(Client *);
+static void down(Client *);
+static void upswap(Client *);
+static void downswap(Client *);
+static void move(const Arg *);
 static void propertynotify(XEvent *e);
 static void quit(const Arg *arg);
 static Monitor *recttomon(int x, int y, int w, int h);
@@ -1210,6 +1215,44 @@ pop(Client *c)
 }
 
 void
+upswap(Client *c)
+{
+    Client **tc;
+
+    for (tc = &c->mon->clients; *tc && (*tc)->next != c; tc = &(*tc)->next);
+    (*tc)->next = c->next;
+    c->next = *tc;
+    *tc = c;
+}
+
+void
+downswap(Client *c)
+{
+    Client **tc;
+
+    for (tc = &c->mon->clients; *tc && *tc != c; tc = &(*tc)->next);
+    *tc = c->next;
+    c->next = (*tc)->next;
+    (*tc)->next = c;
+}
+
+void
+up(Client *c)
+{
+    upswap(c);
+    focus(c);
+    arrange(c->mon);
+}
+
+void
+down(Client *c)
+{
+    downswap(c);
+    focus(c);
+    arrange(c->mon);
+}
+
+void
 propertynotify(XEvent *e)
 {
 	Client *c;
@@ -2131,6 +2174,27 @@ zoom(const Arg *arg)
 		if (!c || !(c = nexttiled(c->next)))
 			return;
 	pop(c);
+}
+
+void
+move(const Arg *arg)
+{
+    // TODO: move up and down in stack
+    Client *c = selmon->sel;
+
+    if (!selmon->lt[selmon->sellt]->arrange
+    || (selmon->sel && selmon->sel->isfloating))
+        return;
+    if (arg->i < 0) {
+        if (!c || c == nexttiled(selmon->clients))
+            return;
+        up(c);
+    }
+    else {
+        if (!c || !nexttiled(c->next))
+            return;
+        down(c);
+    }
 }
 
 int
