@@ -1219,7 +1219,7 @@ upswap(Client *c)
 {
     Client **tc, **pt;
 
-    for (tc = &c->mon->clients; *tc && *tc != c; tc = &(*tc)->next)
+    for (pt = tc = &c->mon->clients; *tc && *tc != c; tc = &(*tc)->next)
         if (!(*tc)->isfloating && ISVISIBLE(*tc))
             pt = tc;
     *tc = c->next;
