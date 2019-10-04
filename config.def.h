@@ -38,6 +38,7 @@ static const Rule rules[] = {
 	{ "Variety",     "variety",     NULL,       0,            1,           -1 },
 	{ "Wine",        "wechat.exe",  NULL,       0,            1,           -1 },
 	{ "Youdao Dict", "youdao-dict", NULL,       0,            1,           -1 },
+	{ "flameshot",   "flameshot",   NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -90,12 +91,14 @@ static Key keys[] = {
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_equal,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_minus,      incnmaster,     {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_j,      move,           {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_k,      move,           {.i = -1 } },
+	{ MODKEY,                       XK_equal,  incnmaster,     {.i = +1 } },
+	{ MODKEY,                       XK_minus,  incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_Tab, zoom,           {0} },
-	{ MODKEY,                       XK_Escape,    view,           {0} },
+	{ MODKEY,                       XK_Tab,    zoom,           {0} },
+	{ MODKEY,                       XK_Escape, view,           {0} },
 	{ MODKEY,                       XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_s,      setlayout,      {.v = &layouts[1]} },
