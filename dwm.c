@@ -213,11 +213,14 @@ static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
 static Client *nexttiled(Client *c);
 static void pop(Client *);
-static void up(Client *);
-static void down(Client *);
-static void upswap(Client *);
-static void downswap(Client *);
-static void move(const Arg *);
+static void jumpup(Client *);
+static void jumpdown(Client *);
+static void movex(const Arg *);
+static void movey(const Arg *);
+static void driftx(Client *, int);
+static void drifty(Client *, int);
+static void resizew(const Arg *);
+static void resizeh(const Arg *);
 static void propertynotify(XEvent *e);
 static void quit(const Arg *arg);
 static Monitor *recttomon(int x, int y, int w, int h);
@@ -1360,7 +1363,7 @@ pop(Client *c)
 }
 
 void
-upswap(Client *c)
+jumpup(Client *c)
 {
     Client **tc, **pt;
 
@@ -1370,10 +1373,11 @@ upswap(Client *c)
     *tc = c->next;
     c->next = *pt;
     *pt = c;
+    arrange(c->mon);
 }
 
 void
-downswap(Client *c)
+jumpdown(Client *c)
 {
     Client **tc, *nt;
 
@@ -1382,21 +1386,6 @@ downswap(Client *c)
     *tc = c->next;
     c->next = nt->next;
     nt->next = c;
-}
-
-void
-up(Client *c)
-{
-    upswap(c);
-    focus(c);
-    arrange(c->mon);
-}
-
-void
-down(Client *c)
-{
-    downswap(c);
-    focus(c);
     arrange(c->mon);
 }
 
@@ -2603,24 +2592,96 @@ zoom(const Arg *arg)
 }
 
 void
-move(const Arg *arg)
+movex(const Arg *arg)
 {
-    // TODO: move up and down in stack
     Client *c = selmon->sel;
 
-    if (!selmon->lt[selmon->sellt]->arrange
-    || (selmon->sel && selmon->sel->isfloating))
+    if (!selmon->lt[selmon->sellt]->arrange || !c)
         return;
-    if (arg->i < 0) {
-        if (!c || c == nexttiled(selmon->clients))
-            return;
-        up(c);
+
+    if (c->isfloating)
+        driftx(c, arg->i * movespeed);
+}
+
+void
+movey(const Arg *arg)
+{
+    Client *c = selmon->sel;
+
+    if (!selmon->lt[selmon->sellt]->arrange || !c)
+        return;
+
+    if (c->isfloating) {
+        drifty(c, arg->i * movespeed);
+        return;
     }
-    else {
-        if (!c || !nexttiled(c->next))
-            return;
-        down(c);
+
+    if (arg->i > 0) {
+        if (nexttiled(c->next))
+            jumpdown(c);
     }
+    else if (c != nexttiled(selmon->clients))
+        jumpup(c);
+}
+
+void
+driftx(Client *c, int dx)
+{
+    int nx = c->x;
+    if (dx > 0)
+        nx = MIN(nx + dx, selmon->mw - movemargin);
+    else
+        nx = MAX(nx + dx, movemargin - c->w);
+    resize(c, nx, c->y, c->w, c->h, 1);
+}
+
+void
+drifty(Client *c, int dy)
+{
+    int ny = c->y;
+    if (dy > 0)
+        ny = MIN(ny + dy, selmon->mh - movemargin);
+    else
+        ny = MAX(ny + dy, movemargin - c->h);
+    resize(c, c->x, ny, c->w, c->h, 1);
+}
+
+void
+resizew(const Arg *arg)
+{
+    Client *c = selmon->sel;
+
+    if (!selmon->lt[selmon->sellt]->arrange || !c)
+        return;
+    if (!c->isfloating)
+        return;
+
+    int dw = arg->i * resizespeed;
+    int nw = c->w;
+    if (dw > 0)
+        nw = MIN(nw + dw, selmon->mw);
+    else
+        nw = MAX(nw + dw, c->minw);
+    resize(c, c->x, c->y, nw, c->h, 1);
+}
+
+void
+resizeh(const Arg *arg)
+{
+    Client *c = selmon->sel;
+
+    if (!selmon->lt[selmon->sellt]->arrange || !c)
+        return;
+    if (!c->isfloating)
+        return;
+
+    int dh = arg->i * resizespeed;
+    int nh = c->h;
+    if (dh > 0)
+        nh = MIN(nh + dh, selmon->mh);
+    else
+        nh = MAX(nh + dh, c->minh);
+    resize(c, c->x, c->y, c->w, nh, 1);
 }
 
 int
