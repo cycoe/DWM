@@ -41,6 +41,9 @@ static const Rule rules[] = {
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
+static const int movespeed   = 50;   /* speed of moving a floating client */
+static const int movemargin  = 10;   /* margin between client edge to window edge */
+static const int resizespeed = 50;   /* speed for client resize */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -87,8 +90,14 @@ static Key keys[] = {
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_j,      move,           {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_k,      move,           {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_h,      movex,          {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_l,      movex,          {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_j,      movey,          {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_k,      movey,          {.i = -1 } },
+	{ MODKEY|ControlMask,           XK_h,      resizew,        {.i = -1 } },
+	{ MODKEY|ControlMask,           XK_l,      resizew,        {.i = +1 } },
+	{ MODKEY|ControlMask,           XK_j,      resizeh,        {.i = +1 } },
+	{ MODKEY|ControlMask,           XK_k,      resizeh,        {.i = -1 } },
 	{ MODKEY,                       XK_equal,  incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_minus,  incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
