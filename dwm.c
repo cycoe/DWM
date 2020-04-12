@@ -215,6 +215,14 @@ static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
 static Client *nexttiled(Client *c);
 static void pop(Client *);
+static void jumpup(Client *);
+static void jumpdown(Client *);
+static void movex(const Arg *);
+static void movey(const Arg *);
+static void driftx(Client *, int);
+static void drifty(Client *, int);
+static void resizew(const Arg *);
+static void resizeh(const Arg *);
 static void propertynotify(XEvent *e);
 static void quit(const Arg *arg);
 static Monitor *recttomon(int x, int y, int w, int h);
@@ -246,6 +254,7 @@ static void tile(Monitor *);
 static void togglealttag();
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void togglefullscreen(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
@@ -1362,7 +1371,34 @@ pop(Client *c)
 }
 
 void
-propertynotify(XEvent *e)
+jumpup(Client *c)
+{
+    Client **tc, **pt;
+
+    for (pt = tc = &c->mon->clients; *tc && *tc != c; tc = &(*tc)->next)
+      if (!(*tc)->isfloating && ISVISIBLE((*tc)))
+        pt = tc;
+    *tc = c->next;
+    c->next = *pt;
+    *pt = c;
+    arrange(c->mon);
+}
+
+void
+jumpdown(Client *c)
+{
+    Client **tc, *nt;
+
+    for (tc = &c->mon->clients; *tc && *tc != c; tc = &(*tc)->next);
+    nt = nexttiled(c->next);
+    *tc = c->next;
+    c->next = nt->next;
+    nt->next = c;
+    arrange(c->mon);
+}
+
+void
+  propertynotify(XEvent *e)
 {
 	Client *c;
 	Window trans;
@@ -1960,6 +1996,14 @@ togglefloating(const Arg *arg)
 		selmon->sel->sfh = selmon->sel->h;
 	}
 	arrange(selmon);
+}
+
+void
+togglefullscreen(const Arg *arg)
+{
+    if (!selmon->sel)
+        return;
+    setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
 }
 
 void
@@ -2568,6 +2612,99 @@ zoom(const Arg *arg)
 		if (!c || !(c = nexttiled(c->next)))
 			return;
 	pop(c);
+}
+
+void
+movex(const Arg *arg)
+{
+    Client *c = selmon->sel;
+
+    if (!selmon->lt[selmon->sellt]->arrange || !c)
+        return;
+
+    if (c->isfloating)
+        driftx(c, arg->i * movespeed);
+}
+
+void
+movey(const Arg *arg)
+{
+    Client *c = selmon->sel;
+
+    if (!selmon->lt[selmon->sellt]->arrange || !c)
+        return;
+
+    if (c->isfloating) {
+        drifty(c, arg->i * movespeed);
+        return;
+    }
+
+    if (arg->i > 0) {
+        if (nexttiled(c->next))
+            jumpdown(c);
+    }
+    else if (c != nexttiled(selmon->clients))
+        jumpup(c);
+}
+
+void
+driftx(Client *c, int dx)
+{
+    int nx = c->x;
+    if (dx > 0)
+        nx = MIN(nx + dx, selmon->mw - movemargin);
+    else
+        nx = MAX(nx + dx, movemargin - c->w);
+    resize(c, nx, c->y, c->w, c->h, 1);
+}
+
+void
+drifty(Client *c, int dy)
+{
+    int ny = c->y;
+    if (dy > 0)
+        ny = MIN(ny + dy, selmon->mh - movemargin);
+    else
+        ny = MAX(ny + dy, movemargin - c->h);
+    resize(c, c->x, ny, c->w, c->h, 1);
+}
+
+void
+resizew(const Arg *arg)
+{
+    Client *c = selmon->sel;
+
+    if (!selmon->lt[selmon->sellt]->arrange || !c)
+        return;
+    if (!c->isfloating)
+        return;
+
+    int dw = arg->i * resizespeed;
+    int nw = c->w;
+    if (dw > 0)
+        nw = MIN(nw + dw, selmon->mw);
+    else
+        nw = MAX(nw + dw, c->minw);
+    resize(c, c->x, c->y, nw, c->h, 1);
+}
+
+void
+resizeh(const Arg *arg)
+{
+    Client *c = selmon->sel;
+
+    if (!selmon->lt[selmon->sellt]->arrange || !c)
+        return;
+    if (!c->isfloating)
+        return;
+
+    int dh = arg->i * resizespeed;
+    int nh = c->h;
+    if (dh > 0)
+      nh = MIN(nh + dh, selmon->mh);
+    else
+      nh = MAX(nh + dh, c->minh);
+    resize(c, c->x, c->y, c->w, nh, 1);
 }
 
 int
